@@ -2,8 +2,8 @@
 import csv
 import time
 import threading
-from datetime import datetime
 from pathlib import Path
+from datetime import datetime
 from concurrent.futures import ThreadPoolExecutor
 
 from src.common.lamport import LamportClock
@@ -31,6 +31,17 @@ MESSAGE_SIZES = {
 
 REPETITIONS = 5
 SAMPLES = 100
+EXCHANGE_COUNT = 20
+
+
+def prepare_data():
+    Path("data").mkdir(parents=True, exist_ok=True)
+
+    for node in NODES:
+        event_file = Path(f"data/tcp_events_{node}.csv")
+
+        if event_file.exists():
+            event_file.unlink()
 
 
 def create_clients():
@@ -51,34 +62,47 @@ def start_servers(clocks, loggers):
     servers = []
     threads = []
 
-    for node, (host, port) in NODES.items():
-        server = TCPNodeServer(
-            (host, port),
-            node,
-            clocks[node],
-            loggers[node]
-        )
+    try:
+        for node, (host, port) in NODES.items():
+            server = TCPNodeServer(
+                (host, port),
+                node,
+                clocks[node],
+                loggers[node]
+            )
 
-        thread = threading.Thread(
-            target=server.serve_forever,
-            daemon=True
-        )
+            thread = threading.Thread(
+                target=server.serve_forever,
+                daemon=True
+            )
 
-        thread.start()
-        servers.append(server)
-        threads.append(thread)
+            thread.start()
 
-        print(f"{node} iniciado en {host}:{port}")
+            servers.append(server)
+            threads.append(thread)
 
-    return servers, threads
+            print(f"{node} iniciado en {host}:{port}")
+
+        time.sleep(0.5)
+
+        return servers, threads
+
+    except Exception:
+        stop_servers(servers, threads)
+        raise
 
 
-def stop_servers(servers):
+def stop_servers(servers, threads):
     for server in servers:
         server.shutdown()
 
     for server in servers:
         server.server_close()
+
+    for thread in threads:
+        thread.join(timeout=2)
+
+    print("Servidores TCP detenidos")
 
 
 def send_request(sender, destination, message, clocks, loggers):
@@ -113,10 +137,11 @@ def run_exchanges(clocks, loggers):
             "timestamp"
         ])
 
-        for index in range(20):
+        for index in range(EXCHANGE_COUNT):
             sender, destination = EXCHANGES[index % len(EXCHANGES)]
 
             message = f"Intercambio experimental numero {index + 1}"
+
             sender_timestamp = clocks[sender].time + 1
 
             response = send_request(
@@ -132,10 +157,17 @@ def run_exchanges(clocks, loggers):
             client_receive_timestamp = clocks[sender].time
 
             if receiver_timestamp <= sender_timestamp:
-                raise RuntimeError("Error en el orden causal de Lamport")
+                raise RuntimeError(
+                    f"Error causal: {sender} -> {destination}"
+                )
 
             if client_receive_timestamp <= response_timestamp:
-                raise RuntimeError("Error en la respuesta de Lamport")
+                raise RuntimeError(
+                    f"Error en la respuesta: {destination} -> {sender}"
+                )
+
+            if response["sender"] != destination:
+                raise RuntimeError("El emisor de la respuesta no coincide")
 
             writer.writerow([
                 index + 1,
@@ -150,8 +182,10 @@ def run_exchanges(clocks, loggers):
                 datetime.now().astimezone().isoformat()
             ])
 
+            file.flush()
+
             print(
-                f"Intercambio {index + 1}/20: "
+                f"Intercambio {index + 1}/{EXCHANGE_COUNT}: "
                 f"{sender} -> {destination} | OK"
             )
 
@@ -225,7 +259,9 @@ def run_latency_tests(clocks, loggers):
 
                 throughput = SAMPLES / duration
 
-                for sample, (latency, timestamp) in enumerate(latencies, 1):
+                for sample, (latency, timestamp) in enumerate(
+                    latencies, 1
+                ):
                     writer.writerow([
                         "TCP",
                         size_name,
@@ -246,7 +282,7 @@ def run_latency_tests(clocks, loggers):
 
                 print(
                     f"TCP {size_name} | "
-                    f"Repeticion {repetition}/5 | "
+                    f"Repeticion {repetition}/{REPETITIONS} | "
                     f"Media: {average:.4f} ms"
                 )
 
@@ -299,9 +335,13 @@ def run_concurrency_test(clocks, loggers):
 
         results = [future.result() for future in futures]
 
-    output = "data/tcp_concurrency.csv"
+    with open(
+        "data/tcp_concurrency.csv",
+        "w",
+        newline="",
+        encoding="utf-8"
+    ) as file:
 
-    with open(output, "w", newline="", encoding="utf-8") as file:
         writer = csv.writer(file)
 
         writer.writerow([
@@ -328,21 +368,15 @@ def run_concurrency_test(clocks, loggers):
 
 
 def main():
-    Path("data").mkdir(parents=True, exist_ok=True)
-
-    for node in NODES:
-        event_file = Path(f"data/tcp_events_{node}.csv")
-
-        if event_file.exists():
-            event_file.unlink()
+    prepare_data()
 
     clocks, loggers = create_clients()
+
     servers = []
+    threads = []
 
     try:
         servers, threads = start_servers(clocks, loggers)
-
-        time.sleep(0.5)
 
         print("\nIniciando experimentos TCP")
 
@@ -361,9 +395,7 @@ def main():
 
     finally:
         if servers:
-            stop_servers(servers)
-
-        print("Servidores TCP detenidos")
+            stop_servers(servers, threads)
 
 
 if __name__ == "__main__":

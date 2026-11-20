@@ -1,0 +1,4 @@
+sender,destination,latency_ms,response,timestamp
+nodo-A,nodo-B,6.1153999995440245,ACK: Mensaje concurrente de nodo-A,2026-11-20T13:53:29.661774-05:00
+nodo-B,nodo-C,6.211800005985424,ACK: Mensaje concurrente de nodo-B,2026-11-20T13:53:29.661774-05:00
+nodo-C,nodo-A,6.6786999959731475,ACK: Mensaje concurrente de nodo-C,2026-11-20T13:53:29.660671-05:00
