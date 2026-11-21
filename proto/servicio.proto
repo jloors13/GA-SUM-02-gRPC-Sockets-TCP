@@ -1,20 +1,34 @@
 syntax = "proto3";
 
+// Paquete que agrupa las definiciones de la práctica y evita choques de nombres.
 package mensajeria;
 
+// Servicio que expone cada nodo para recibir mensajes de los otros nodos.
 service ComunicacionNodos {
+  // El cliente envía un Mensaje y el servidor responde con un Acuse.
   rpc EnviarMensaje(Mensaje) returns (Acuse);
 }
 
+// Lo que envía el cliente. Equivale al JSON {sender, timestamp, message} de TCP.
 message Mensaje {
+  // Nombre del nodo que envía, por ejemplo "nodo-A".
   string sender = 1;
+  // timestamp: valor del reloj de Lamport del emisor. Se usa int64 porque es
+  // compatible con lenguajes sin enteros sin signo (como Java) y porque un
+  // valor negativo se puede detectar y rechazar como error.
   int64 timestamp = 2;
+  // Texto del mensaje.
   string message = 3;
 }
 
+// Lo que responde el servidor. Equivale a la respuesta JSON de TCP.
 message Acuse {
+  // Nombre del nodo que responde.
   string sender = 1;
+  // Reloj del servidor después de recibir el mensaje. Usa int64 igual que Mensaje.
   int64 received_timestamp = 2;
+  // Reloj del servidor al enviar la respuesta. Usa int64 igual que Mensaje.
   int64 timestamp = 3;
+  // Confirmación con el formato "ACK: <mensaje original>".
   string message = 4;
 }

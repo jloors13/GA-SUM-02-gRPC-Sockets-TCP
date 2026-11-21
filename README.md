@@ -194,6 +194,40 @@ También se generan dos gráficos:
 - `analysis/figures/tcp_latency_comparison.png`
 - `analysis/figures/tcp_latency_distribution.png`
 
+## Servidor gRPC (Washington)
+
+El servidor gRPC cumple la misma función que el servidor TCP, pero usa Protocol Buffers: los mensajes viajan en binario y el cliente llama a `EnviarMensaje` como si fuera una función local. La estructura de los mensajes y el servicio están definidos en `proto/servicio.proto`.
+
+### Generar el código del contrato
+
+Desde la raíz del repositorio:
+
+```bash
+python -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. proto/servicio.proto
+```
+
+Este comando crea `proto/servicio_pb2.py` (las clases `Mensaje` y `Acuse`) y `proto/servicio_pb2_grpc.py` (la clase base del servidor y el stub del cliente). Se usa `-I.` para que la raíz del repositorio sea el punto de partida de las rutas; así, el import generado queda como `from proto import servicio_pb2` y funciona al ejecutar los módulos con `python -m` desde la raíz.
+
+Hay que volver a ejecutarlo cada vez que se modifique `servicio.proto`.
+
+### Iniciar un nodo
+
+Desde la raíz del repositorio:
+
+```bash
+python -m src.grpc.grpc_server nodo-A
+```
+
+También se puede utilizar `nodo-B` o `nodo-C`. El nodo usa la misma dirección y puerto de la tabla de la implementación TCP y registra sus eventos en `data/grpc_events_<nodo>.csv`. Para detenerlo se presiona `Ctrl + C`.
+
+Como los puertos coinciden con los de TCP, no se debe iniciar un nodo TCP y un nodo gRPC con el mismo nombre al mismo tiempo.
+
+### Ejecutar las pruebas del servidor
+
+```bash
+python -m unittest tests.test_grpc_server -v
+```
+
 ## Pruebas automatizadas
 
 El proyecto utiliza `unittest` para verificar el funcionamiento de los módulos implementados.
@@ -204,9 +238,9 @@ Ejecutar todas las pruebas:
 python -m unittest discover -s tests -v
 ```
 
-Las pruebas disponibles comprueban el funcionamiento del reloj de Lamport, el registro de eventos y los cálculos estadísticos.
+Las pruebas disponibles comprueban el funcionamiento del reloj de Lamport, el registro de eventos, los cálculos estadísticos y el servidor gRPC.
 
-En la validación realizada durante el desarrollo se obtuvieron 22 pruebas superadas.
+En la validación realizada durante el desarrollo se obtuvieron 53 pruebas superadas.
 
 ## Resultados experimentales TCP
 
