@@ -78,14 +78,14 @@ ni deja eventos registrados.
 
 \subsection{Reloj de Lamport y registro de eventos}
 
-El reloj de Lamport se actualiza en dos puntos de \texttt{EnviarMensaje}:
+El reloj de Lamport~\cite{lamport1978} se actualiza en dos puntos de \texttt{EnviarMensaje}:
 \texttt{after\_receive} al recibir, que tiene en cuenta el \texttt{timestamp}
 del emisor, y \texttt{before\_send} antes de responder. Por cada llamada
 aceptada, el servidor registra dos eventos con \texttt{logger.log\_event}: uno
 de tipo \texttt{receive} y otro de tipo \texttt{send}, ambos con el nombre del
 nodo y el valor del reloj en ese momento.
 
-Los eventos se escriben en \texttt{data/grpc\_events\_<nodo>.csv}, un archivo
+Los eventos se escriben en \texttt{data/grpc\_events\_\textless{}nodo\textgreater{}.csv}, un archivo
 por nodo. Cada registro contiene el nodo, el tipo de evento, el
 \texttt{timestamp} de Lamport y la fecha y hora reales, igual que en la
 implementación TCP, lo que permite comparar los dos mecanismos con el mismo
@@ -114,23 +114,23 @@ El archivo contiene 6 pruebas:
 
 \begin{itemize}
   \item \texttt{test\_timestamp\_negativo}: comprueba que el servidor rechaza
-        un \texttt{timestamp} negativo con \texttt{INVALID\_ARGUMENT}.
+        un \texttt{timestamp} negativo con \texttt{INVALID\_ARGUMENT} y que no
+        se registra ningún evento.
   \item \texttt{test\_llamada\_valida}: envía un mensaje con \texttt{timestamp=5}
         y comprueba que la respuesta trae el nombre del nodo, el valor de
         reloj 6 al recibir, el valor 7 al responder y el texto
         \texttt{"ACK: hola"}.
   \item \texttt{test\_emisor\_vacio}: envía un mensaje con el emisor vacío y
         comprueba que se rechaza con \texttt{INVALID\_ARGUMENT} y que no se
-        registra ningún evento. % VERIFICAR contra test_grpc_server.py
+        registra ningún evento.
   \item \texttt{test\_reloj\_crece\_entre\_llamadas}: hace dos llamadas seguidas y
-        comprueba que el valor ___ de la segunda es mayor que el valor ___ de
-        la primera. % COMPLETAR mirando test_grpc_server.py
+        comprueba que el valor \texttt{received\_timestamp} de la segunda
+        respuesta es mayor que el valor \texttt{timestamp} de la primera.
   \item \texttt{test\_registra\_receive\_y\_send}: hace una llamada con
         \texttt{timestamp=5} y comprueba que el registrador guarda exactamente
         2 eventos: \texttt{receive} con valor 6 y \texttt{send} con valor 7.
-        % VERIFICAR contra test_grpc_server.py
-  \item \texttt{test\_\dots}: prueba de concurrencia. Se realizaron 30
-        llamadas y no se repitió ningún \texttt{timestamp}. Esto demuestra que
+  \item \texttt{test\_concurrencia}: prueba de concurrencia. Se lanzaron 30 llamadas desde 10 hilos y no se repitió ningún
+        \texttt{timestamp}. Esto demuestra que
         los valores del reloj no se repiten, no que las llamadas sean
         atómicas.
 \end{itemize}
