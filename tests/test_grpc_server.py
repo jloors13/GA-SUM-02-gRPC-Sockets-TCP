@@ -52,12 +52,16 @@ class TestGrpcServer(unittest.TestCase):
             self.stub.EnviarMensaje(
                 servicio_pb2.Mensaje(sender="", timestamp=1, message="x"))
         self.assertEqual(ctx.exception.code(), grpc.StatusCode.INVALID_ARGUMENT)
+        self.assertEqual(self.logger.events, [])
+
+
 
     def test_timestamp_negativo(self):
         with self.assertRaises(grpc.RpcError) as ctx:
             self.stub.EnviarMensaje(
                 servicio_pb2.Mensaje(sender="nodo-A", timestamp=-1, message="x"))
         self.assertEqual(ctx.exception.code(), grpc.StatusCode.INVALID_ARGUMENT)
+        self.assertEqual(self.logger.events, [])
 
     def test_reloj_crece_entre_llamadas(self):
         r1 = self.stub.EnviarMensaje(
