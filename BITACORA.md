@@ -49,3 +49,27 @@
 * **Solución:** Se cambió `LamportClock()` por `LamportClock("nodo-X")` en el `setUp` de las pruebas, porque el constructor exige el nombre del nodo.
 * **Problema:** La bitácora tenía texto de plantilla y una afirmación imprecisa sobre `uint64`: decía que un negativo se convertiría en un número gigante, pero en Python la librería lanza un error al construir el mensaje.
 * **Solución:** Se reemplazó el texto de plantilla por el contenido real y se reescribió la razón de `int64` con lo que se puede demostrar: el servidor rechaza el negativo con `INVALID_ARGUMENT`, como comprueba `test_timestamp_negativo`.
+
+
+## Sesión 4 — Informe del servidor, referencias y capturas
+* **Fecha:** 20 de noviembre de 2026  
+* **Hora:** 20:55 – 22:28  
+* **Integrante:** Washington Apunte  
+
+### Lo realizado
+* Se completó la sección del informe «Servidor gRPC» (`seccion_servidor.tex`): se terminó la lista de las 6 pruebas y se corrigió `<nodo>` en el nombre del CSV para que se vea bien en el PDF.
+* Se probó el servidor con el cliente gRPC de César (`python -m src.grpc.grpc_client nodo-A nodo-B "Hola"`): el servidor respondió `ACK: Hola`. El reloj de `nodo-A` terminó en 4 en la primera llamada y en 6 en la segunda, porque el servidor conserva su reloj entre llamadas.
+* Se tomaron 6 capturas con el usuario, el equipo y la fecha visibles: cliente, servidor, las 53 pruebas, emisor vacío, `timestamp` negativo y el CSV de eventos de `nodo-B`.
+* Se escribió `informe/referencias.bib` con 7 entradas: Niswar 2024, Ain 2025, Maltsev y Amin 2024, Iwanowski et al. 2024 (JCSI), Lamport 1978, RFC 9293 y RFC 9113. Los datos de cada una se comprobaron en Crossref y en las páginas de las revistas.
+* Se agregaron citas en `seccion_proto.tex` (Niswar, Ain, Iwanowski et al., Maltsev y Amin, RFC 9113 y RFC 9293) y en `seccion_servidor.tex` (Lamport).
+* Se fusionaron el PR #8 y el PR #9 con merge commit.
+
+### Problemas encontrados y soluciones
+* **Problema:** Sangwai 2023 y Ghosh 2023 eran de pago.
+* **Solución:** Se citan solo fuentes de libre acceso, así que ambas quedaron fuera del `.bib` y se reemplazaron por Maltsev y Amin 2024 e Iwanowski et al. 2024.
+* **Problema:** En el artículo de JCSI 2024, la página de la revista y Crossref listan primero a Jarmoszewicz, pero el PDF imprime primero a Iwanowski.
+* **Solución:** Se usó el orden del PDF, porque es el del propio artículo, y se dejó anotada la diferencia.
+* **Problema:** Se subió `seccion_servidor.tex` sin guardar el archivo en VS Code (faltó Ctrl+S) y quedó una versión a medias en `main`.
+* **Solución:** Se detectó con `git diff`, se guardó y se subió la corrección. Desde entonces se revisa con `git diff` antes de cada commit y se activó el guardado automático.
+* **Problema:** Al añadir las citas, `git diff` mostró que una cita ya subida (Niswar) había vuelto a un `% TODO`.
+* **Solución:** Se volvió a poner la cita antes de hacer el commit.
