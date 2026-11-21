@@ -1,0 +1,113 @@
+\section{El contrato \texttt{.proto} y Protocol Buffers}
+
+Protocol Buffers es un formato para definir y serializar datos estructurados
+% TODO: \cite{...} (Protocol Buffers)
+que se usa junto con gRPC
+% TODO: \cite{...} (gRPC)
+para que dos procesos intercambien mensajes sabiendo de antemano qué campos
+existen y de qué tipo es cada uno. A diferencia del JSON de texto que usa
+nuestra implementación TCP, donde la estructura no está escrita en ningún
+archivo y el servidor accede a cada clave a mano, en Protocol Buffers la
+estructura y los tipos se declaran en un archivo \texttt{.proto} y los mensajes
+viajan en binario. Esto no elimina la validación de los valores: nuestro
+servidor gRPC sigue rechazando el emisor vacío y el \texttt{timestamp}
+negativo. Otra diferencia es el tratamiento de los campos ausentes: en
+\texttt{proto3} un campo que no se envía llega con su valor por defecto
+(cadena vacía o 0), mientras que en TCP la clave faltante provoca un
+\texttt{KeyError} que el servidor detecta y responde como error.
+
+\subsection{El archivo \texttt{servicio.proto}}
+
+El archivo \texttt{proto/servicio.proto} es el contrato entre el servidor y el
+cliente gRPC: describe qué mensajes existen y qué función se puede llamar de
+forma remota. Su contenido, sin comentarios, es el siguiente:
+
+\begin{verbatim}
+syntax = "proto3";
+
+package mensajeria;
+
+service ComunicacionNodos {
+  rpc EnviarMensaje(Mensaje) returns (Acuse);
+}
+
+message Mensaje {
+  string sender = 1;
+  int64 timestamp = 2;
+  string message = 3;
+}
+
+message Acuse {
+  string sender = 1;
+  int64 received_timestamp = 2;
+  int64 timestamp = 3;
+  string message = 4;
+}
+\end{verbatim}
+
+Cada parte cumple una función:
+
+\begin{itemize}
+  \item \texttt{syntax = "proto3"} indica la versión del lenguaje de
+        Protocol Buffers.
+  \item \texttt{package mensajeria} agrupa las definiciones y evita choques
+        de nombres con otros archivos.
+  \item \texttt{service ComunicacionNodos} declara la función remota
+        \texttt{EnviarMensaje}: recibe un \texttt{Mensaje} y devuelve un
+        \texttt{Acuse}.
+  \item \texttt{Mensaje} es lo que envía el cliente y equivale al JSON
+        \texttt{\{sender, timestamp, message\}} de TCP.
+  \item \texttt{Acuse} es lo que responde el servidor y equivale a la
+        respuesta JSON de TCP.
+  \item Los números \texttt{= 1}, \texttt{= 2}, \dots{} identifican cada campo
+        dentro del mensaje binario. En el binario no viajan los nombres de los
+        campos, solo estos números.
+\end{itemize}
+
+\subsection{Tamaño del mensaje: Protocol Buffers frente a JSON}
+
+Para comparar el tamaño se codificó el mismo mensaje de prueba
+(\texttt{sender="nodo-A"}, \texttt{timestamp=5}, \texttt{message="hola"}) en
+las dos formas. En nuestro mensaje de prueba, Protocol Buffers ocupa 16 bytes
+y el JSON generado con \texttt{json.dumps} ocupa 55 bytes. Estas cifras
+corresponden solo al contenido del mensaje, sin contar las cabeceras de gRPC ni
+de TCP, y no se pueden generalizar a otros mensajes: con textos largos, la
+diferencia relativa será menor, porque el contenido del texto ocupa lo mismo
+en ambos formatos.
+
+\subsection{Elección del tipo \texttt{int64}}
+
+Los tres campos de tiempo guardan el valor del reloj de Lamport. Aunque este
+reloj nunca es negativo y \texttt{uint64} también sería válido, se eligió
+\texttt{int64} por dos razones. Primero, facilita la compatibilidad con
+lenguajes sin enteros sin signo nativos, como Java, si en el futuro se escribe
+un cliente en otro lenguaje. Segundo, con \texttt{int64} el servidor puede
+recibir un valor negativo y rechazarlo de forma controlada con
+\texttt{INVALID\_ARGUMENT}, como comprueba la prueba
+\texttt{test\_timestamp\_negativo}. En Python ambos tipos se leen como
+\texttt{int}, así que la elección no cambia el resto del código del servidor.
+
+\subsection{Generación del código}
+
+El archivo \texttt{.proto} no se ejecuta. Se procesa con
+\texttt{grpc\_tools.protoc} desde la raíz del repositorio:
+
+\begin{verbatim}
+python -m grpc_tools.protoc -I. \
+    --python_out=. --grpc_python_out=. \
+    proto/servicio.proto
+\end{verbatim}
+
+Este comando genera dos archivos:
+
+\begin{itemize}
+  \item \texttt{servicio\_pb2.py}: las clases \texttt{Mensaje} y
+        \texttt{Acuse} para crear y leer mensajes.
+  \item \texttt{servicio\_pb2\_grpc.py}: la clase base
+        \texttt{ComunicacionNodosServicer}, de la que hereda nuestro servidor,
+        y el \texttt{ComunicacionNodosStub}, que usa el cliente para llamar a
+        \texttt{EnviarMensaje} como si fuera una función local.
+\end{itemize}
+
+La opción \texttt{-I.} toma la raíz del repositorio como punto de partida, de
+modo que el import generado queda como \texttt{from proto import servicio\_pb2}.
