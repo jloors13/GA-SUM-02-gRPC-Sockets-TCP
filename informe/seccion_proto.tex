@@ -12,7 +12,9 @@ servidor gRPC sigue rechazando el emisor vacío y el \texttt{timestamp}
 negativo. Otra diferencia es el tratamiento de los campos ausentes: en
 \texttt{proto3} un campo que no se envía llega con su valor por defecto
 (cadena vacía o 0), mientras que en TCP la clave faltante provoca un
-\texttt{KeyError} que el servidor detecta y responde como error.
+\texttt{KeyError} que el servidor detecta y responde como error. Además, gRPC
+transporta estos mensajes sobre HTTP/2~\cite{rfc9113}, que a su vez funciona
+sobre TCP~\cite{rfc9293}.
 
 \subsection{El archivo \texttt{servicio.proto}}
 
@@ -72,6 +74,15 @@ corresponden solo al contenido del mensaje, sin contar las cabeceras de gRPC ni
 de TCP, y no se pueden generalizar a otros mensajes: con textos largos, la
 diferencia relativa será menor, porque el contenido del texto ocupa lo mismo
 en ambos formatos.
+
+Otros trabajos han comparado gRPC con REST. En uno, gRPC obtuvo mejor
+rendimiento en transferencias de datos grandes, pero la diferencia no resultó
+estadísticamente significativa~\cite{ain2025}; en otro, las aplicaciones con
+gRPC fueron, en general, más eficientes y escalables, aunque consumieron más
+CPU~\cite{jcsi2024}. Sobre la serialización, se ha señalado que reducir el
+tamaño del mensaje influye más en la latencia de extremo a extremo que la
+velocidad de serialización~\cite{maltsev2024}. Nuestra comparación solo mide
+el tamaño en bytes, no la latencia.
 
 \subsection{Elección del tipo \texttt{int64}}
 
