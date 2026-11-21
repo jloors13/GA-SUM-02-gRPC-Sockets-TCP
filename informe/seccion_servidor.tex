@@ -78,7 +78,7 @@ ni deja eventos registrados.
 
 \subsection{Reloj de Lamport y registro de eventos}
 
-El reloj de Lamport se actualiza en dos puntos de \texttt{EnviarMensaje}:
+El reloj de Lamport~\cite{lamport1978} se actualiza en dos puntos de \texttt{EnviarMensaje}:
 \texttt{after\_receive} al recibir, que tiene en cuenta el \texttt{timestamp}
 del emisor, y \texttt{before\_send} antes de responder. Por cada llamada
 aceptada, el servidor registra dos eventos con \texttt{logger.log\_event}: uno
@@ -129,8 +129,7 @@ El archivo contiene 6 pruebas:
   \item \texttt{test\_registra\_receive\_y\_send}: hace una llamada con
         \texttt{timestamp=5} y comprueba que el registrador guarda exactamente
         2 eventos: \texttt{receive} con valor 6 y \texttt{send} con valor 7.
-  \item \texttt{test\_concurrencia}: prueba de concurrencia. Se realizaron 30
-        llamadas lanzadas desde 10 hilos y no se repitió ningún
+  \item \texttt{test\_concurrencia}: prueba de concurrencia. Se lanzaron 30 llamadas desde 10 hilos y no se repitió ningún
         \texttt{timestamp}. Esto demuestra que
         los valores del reloj no se repiten, no que las llamadas sean
         atómicas.
