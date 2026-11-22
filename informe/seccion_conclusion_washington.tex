@@ -1,0 +1,21 @@
+\section{Conclusión individual: Washington Apunte}
+
+Mi parte fue el contrato \texttt{servicio.proto} y el servidor gRPC. En el
+contrato definí el servicio \texttt{ComunicacionNodos}, con la función
+\texttt{EnviarMensaje}, y los mensajes \texttt{Mensaje} y \texttt{Acuse}. En el
+servidor implementé esa función: valida la solicitud, actualiza el reloj de
+Lamport, registra los eventos \texttt{receive} y \texttt{send} y devuelve el
+acuse. Las llamadas se atienden con un grupo fijo de 10 hilos.
+
+La decisión que más tuve que justificar fue usar \texttt{int64} para los tres
+timestamps, aunque el reloj nunca es negativo. Lo elegí porque facilita la
+compatibilidad con lenguajes sin enteros sin signo nativos y porque permite que
+el servidor reciba un valor negativo y lo rechace con
+\texttt{INVALID\_ARGUMENT}, como comprueba \texttt{test\_timestamp\_negativo}.
+
+Escribí 6 pruebas para el servidor, que forman parte de las 56 del proyecto.
+La de concurrencia lanza 30 llamadas desde 10 hilos y ningún timestamp se
+repite, pero aprendí a no exagerar ese resultado: demuestra que los valores son
+únicos, no que cada llamada sea atómica. También vi que el contrato fija los
+tipos, pero no los valores: el emisor vacío y el timestamp negativo los sigue
+validando mi servidor.

@@ -251,7 +251,7 @@ python -m unittest discover -s tests -v
 
 Las pruebas disponibles comprueban el funcionamiento del reloj de Lamport, el registro de eventos, los cálculos estadísticos y el servidor gRPC.
 
-En la validación realizada durante el desarrollo se obtuvieron 53 pruebas superadas.
+En la validación realizada durante el desarrollo se obtuvieron 56 pruebas superadas.
 
 ## Resultados experimentales TCP
 
@@ -268,7 +268,7 @@ Estos valores corresponden al entorno donde se realizaron las pruebas. No repres
 
 La implementación TCP, el registro de eventos, los relojes lógicos y el análisis estadístico se encuentran desarrollados y cuentan con pruebas automatizadas.
 
-La implementación gRPC con Protocol Buffers y la comparación final entre ambos mecanismos forman parte del trabajo pendiente de integración.
+La implementación gRPC también está desarrollada. El contrato `proto/servicio.proto` define los mensajes y el servicio; el servidor y el cliente gRPC permiten el intercambio de mensajes entre los tres nodos, y ya se ejecutaron sus experimentos. El servidor y el cliente tienen sus propias pruebas en `tests/test_grpc_server.py` y `tests/test_grpc_client.py`. Quedan pendientes el análisis comparativo de TCP frente a gRPC y el informe final.
 
 ## Trabajo colaborativo
 
