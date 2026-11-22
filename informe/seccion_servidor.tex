@@ -35,6 +35,13 @@ grupo acota el número de hilos y, por tanto, el consumo de recursos, pero si
 llegan más de 10 llamadas a la vez, las demás esperan a que se libere un
 hilo.
 
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\linewidth]{informe/capturas/captura_servidor.png}
+  \caption{Inicio de un nodo del servidor gRPC.}
+  \label{fig:servidor}
+\end{figure}
+
 \subsection{Qué hace \texttt{EnviarMensaje}}
 
 Cada llamada ejecuta los siguientes pasos, en este orden:
@@ -53,6 +60,13 @@ Cada llamada ejecuta los siguientes pasos, en este orden:
         el valor del paso 3 en \texttt{timestamp} y el mensaje
         \texttt{"ACK: "} seguido del texto recibido.
 \end{enumerate}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\linewidth]{informe/capturas/captura_cliente.png}
+  \caption{El cliente envía un mensaje y recibe el acuse del servidor.}
+  \label{fig:cliente}
+\end{figure}
 
 \subsection{Validación y errores}
 
@@ -75,6 +89,20 @@ como una excepción \texttt{grpc.RpcError} con el código
 respuesta \texttt{\{"error": \dots\}} de la versión TCP. Como la validación
 ocurre antes de tocar el reloj, una solicitud rechazada no modifica el reloj
 ni deja eventos registrados.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\linewidth]{informe/capturas/captura_emisor_vacio.png}
+  \caption{Prueba \texttt{test\_emisor\_vacio}: el servidor rechaza un emisor vacío.}
+  \label{fig:vacio}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\linewidth]{informe/capturas/captura_timestamp_negativo.png}
+  \caption{Prueba \texttt{test\_timestamp\_negativo}: el servidor rechaza un \texttt{timestamp} negativo.}
+  \label{fig:negativo}
+\end{figure}
 
 \subsection{Reloj de Lamport y registro de eventos}
 
@@ -100,6 +128,13 @@ embargo, \texttt{EnviarMensaje} completo no es atómico: dos llamadas
 simultáneas pueden intercalar sus pasos, de modo que los eventos de ambas
 pueden aparecer mezclados en el CSV, aunque cada valor del reloj sigue siendo
 único.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\linewidth]{informe/capturas/captura_csv_eventos.png}
+  \caption{Eventos \texttt{receive} y \texttt{send} registrados por \texttt{nodo-B}.}
+  \label{fig:csv}
+\end{figure}
 
 \subsection{Pruebas del servidor}
 
@@ -134,3 +169,10 @@ El archivo contiene 6 pruebas:
         los valores del reloj no se repiten, no que las llamadas sean
         atómicas.
 \end{itemize}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\linewidth]{informe/capturas/captura_53_pruebas.png}
+  \caption{Ejecución de las pruebas con \texttt{unittest}: todas pasan.}
+  \label{fig:pruebas}
+\end{figure}
