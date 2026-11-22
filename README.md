@@ -198,6 +198,17 @@ También se generan dos gráficos:
 
 El servidor gRPC cumple la misma función que el servidor TCP, pero usa Protocol Buffers: los mensajes viajan en binario y el cliente llama a `EnviarMensaje` como si fuera una función local. La estructura de los mensajes y el servicio están definidos en `proto/servicio.proto`.
 
+## Cliente y experimentos gRPC (César)
+
+El cliente gRPC (`src/grpc/grpc_client.py`) abre un canal inseguro hacia el nodo destino, actualiza el reloj de Lamport antes de enviar y al recibir el `Acuse`, registra ambos eventos en `data/grpc_events_<nodo>.csv` y maneja errores `grpc.RpcError` con timeout configurable.
+
+### Enviar un mensaje puntual
+
+Con los nodos gRPC activos (por ejemplo `nodo-B` en el puerto 5001), desde la raíz del repositorio:
+
+```bash
+python -m src.grpc.grpc_client nodo-A nodo-B "Hola desde gRPC"
+
 ### Generar el código del contrato
 
 Desde la raíz del repositorio:
