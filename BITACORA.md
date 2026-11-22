@@ -107,3 +107,21 @@
 ### Problemas encontrados y soluciones
 - **Problema:** La primera captura de la ejecución de experimentos cortaba el prompt con el usuario arriba y el bloque de mensajes largos abajo[cite: 11].
 - **Solución:** Se verificó la salida completa en la terminal para respaldar evidencias con el usuario, nombre del equipo, fecha y hora visibles.
+
+
+## Sesión 7 — README, declaración de uso de IA y conclusión individual
+* **Fecha:** 22 de noviembre de 2026  
+* **Hora:** 14:30 – 16:10  
+* **Integrante:** Washington Apunte  
+
+### Lo realizado
+* Se sincronizó la rama de trabajo con `main` mediante un fast-forward, sin commit de fusión.
+* Se ejecutó la suite completa de pruebas y pasaron las 56.
+* Se reescribió el segundo párrafo de «Estado del proyecto» en el `README.md`. Ahora indica que el contrato `proto/servicio.proto`, el servidor y el cliente gRPC y sus experimentos están desarrollados, y que quedan pendientes el análisis comparativo de TCP frente a gRPC y el informe final. También menciona las pruebas de cada uno en `tests/test_grpc_server.py` y `tests/test_grpc_client.py`.
+* Se redactó la declaración de uso de IA.
+* Se escribió la conclusión individual en `informe/seccion_conclusion_washington.tex`, de unas 180 palabras. Resume el contrato y el servidor, justifica el uso de `int64` y da las cifras de las pruebas: 6 del servidor, 56 en total y la prueba de concurrencia de 30 llamadas desde 10 hilos.
+* Se revisaron la guía de la práctica y los criterios de evaluación del docente.
+
+### Problemas encontrados y soluciones
+* **Problema:** «Estado del proyecto» seguía diciendo que la implementación gRPC estaba pendiente, aunque el contrato, el servidor y el cliente ya estaban en el repositorio.
+* **Solución:** Se reescribió el párrafo separando lo hecho de lo pendiente.
