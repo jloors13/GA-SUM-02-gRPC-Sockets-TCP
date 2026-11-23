@@ -208,8 +208,22 @@ Con los nodos gRPC activos (por ejemplo `nodo-B` en el puerto 5001), desde la ra
 
 ```bash
 python -m src.grpc.grpc_client nodo-A nodo-B "Hola desde gRPC"
+```
 
-### Generar el código del contrato
+### Ejecutar los experimentos gRPC
+
+Para ejecutar la batería completa de experimentos gRPC (intercambios en anillo, medición de latencia para mensajes cortos y largos, y prueba de concurrencia):
+
+```bash
+python -m src.grpc.grpc_experiment
+```
+
+### Ejecutar las pruebas del cliente gRPC
+
+```bash
+python -m unittest tests.test_grpc_client -v
+```
+
 
 Desde la raíz del repositorio:
 
@@ -269,6 +283,46 @@ Estos valores corresponden al entorno donde se realizaron las pruebas. No repres
 La implementación TCP, el registro de eventos, los relojes lógicos y el análisis estadístico se encuentran desarrollados y cuentan con pruebas automatizadas.
 
 La implementación gRPC también está desarrollada. El contrato `proto/servicio.proto` define los mensajes y el servicio; el servidor y el cliente gRPC permiten el intercambio de mensajes entre los tres nodos, y ya se ejecutaron sus experimentos. El servidor y el cliente tienen sus propias pruebas en `tests/test_grpc_server.py` y `tests/test_grpc_client.py`. Quedan pendientes el análisis comparativo de TCP frente a gRPC y el informe final.
+
+## Video demostrativo
+
+El video demostrativo de la práctica (duración entre 3 y 5 minutos) explica el funcionamiento de los nodos, el intercambio de mensajes con relojes de Lamport y la ejecución de los experimentos:
+
+- **Enlace del video:** [Ver video en YouTube / Google Drive](https://youtu.be/) *(reemplazar con el enlace final del grupo)*
+
+## Compilación del informe académico
+
+El informe del proyecto está redactado en LaTeX y utiliza BibLaTeX/Biber para la bibliografía y citas IEEE. Para compilar `main.tex`:
+
+Desde el directorio `informe/` (o `docs/` según la ubicación final del informe):
+
+```bash
+pdflatex main
+biber main
+pdflatex main
+pdflatex main
+```
+
+Este flujo garantiza la correcta resolución de referencias cruzadas, figuras y citas bibliográficas unificadas.
+
+## Ejecución del análisis y verificación
+
+Para verificar la integridad de los datos experimentales y el cumplimiento del orden causal de los relojes de Lamport:
+
+1. **Validación de datos de los experimentos:**
+   ```bash
+   python -m analysis.validate_experiment_data
+   ```
+
+2. **Verificación del orden causal de Lamport:**
+   ```bash
+   python -m analysis.verify_lamport
+   ```
+
+3. **Cálculo de estadísticas y generación de gráficos:**
+   ```bash
+   python -m analysis.tcp_statistics
+   ```
 
 ## Trabajo colaborativo
 

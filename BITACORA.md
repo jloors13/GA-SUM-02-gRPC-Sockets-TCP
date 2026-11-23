@@ -100,12 +100,12 @@
 
 ### Lo realizado
 - Ejecución completa de `src/grpc/grpc_experiment.py` en equipo local y respaldo de los CSV crudos en `data/` (`grpc_events_nodo-A.csv`, `grpc_events_nodo-B.csv`, `grpc_events_nodo-C.csv`, `grpc_exchanges.csv`, `grpc_latency.csv` y `grpc_concurrency.csv`).
-- Implementación y ejecución de 3 pruebas unitarias para el cliente gRPC en `tests/test_grpc_client.py` (envío válido con reloj de Lamport, rechazo de emisor vacío y manejo de servidor inaccesible), todas superadas (`OK` en 1.721 s)[cite: 12].
+- Implementación y ejecución de 3 pruebas unitarias para el cliente gRPC en `tests/test_grpc_client.py` (envío válido con reloj de Lamport, rechazo de emisor vacío y manejo de servidor inaccesible), todas superadas (`OK` en 1.721 s).
 - Documentación del cliente gRPC, el script de experimentos y las pruebas unitarias en `README.md`.
 - Limpieza del texto de plantilla pendiente en la Sesión 1 de `BITACORA.md` y registro de las sesiones de trabajo.
 
 ### Problemas encontrados y soluciones
-- **Problema:** La primera captura de la ejecución de experimentos cortaba el prompt con el usuario arriba y el bloque de mensajes largos abajo[cite: 11].
+- **Problema:** La primera captura de la ejecución de experimentos cortaba el prompt con el usuario arriba y el bloque de mensajes largos abajo.
 - **Solución:** Se verificó la salida completa en la terminal para respaldar evidencias con el usuario, nombre del equipo, fecha y hora visibles.
 
 
@@ -125,3 +125,24 @@
 ### Problemas encontrados y soluciones
 * **Problema:** «Estado del proyecto» seguía diciendo que la implementación gRPC estaba pendiente, aunque el contrato, el servidor y el cliente ya estaban en el repositorio.
 * **Solución:** Se reescribió el párrafo separando lo hecho de lo pendiente.
+
+
+## Sesión 8 — Sección del informe del cliente gRPC, entorno experimental, declaración de IA y conclusión
+* **Fecha:** 22 de noviembre de 2026  
+* **Hora:** 19:20 – 19:50  
+* **Integrante:** César Macías  
+
+### Lo realizado
+* Se sincronizó la rama `cesar` con los últimos cambios de `main` (fast-forward incluyendo aportes de Washington y suite completa de 56 pruebas).
+* Se corrigieron las líneas 103 y 108 de `BITACORA.md` eliminando los marcadores residuales `[cite: 12]` y `[cite: 11]`.
+* Se redactó la sección del informe sobre el cliente gRPC (`informe/seccion_cliente.tex`), detallando la estructura de `grpc_client.py`, la gestión del reloj de Lamport, el control de excepciones con `grpc.RpcError`, la suite de pruebas unitarias y la automatización experimental.
+* Se documentó detalladamente el entorno experimental de las corridas (Python, arquitectura AMD64 con 16 núcleos lógicos, Windows 11, y nodos simulados como procesos/hilos independientes en `localhost`).
+* Se redactó la declaración individual de uso de IA en `informe/seccion_declaracion_ia.tex`.
+* Se redactó la conclusión individual en `informe/seccion_conclusion_cesar.tex` y en la sección del cliente.
+* Se verificó la ejecución exitosa de la suite completa de 56 pruebas automatizadas (`OK`).
+
+### Problemas encontrados y soluciones
+* **Problema:** En la Sesión 6 de `BITACORA.md` habían quedado marcadores residuales `[cite: 12]` y `[cite: 11]`.
+* **Solución:** Se removieron ambos marcadores dejando la redacción limpia y uniforme.
+* **Problema:** El entorno de corrida de los experimentos no estaba formalmente caracterizado en el informe para garantizar la validez metodológica frente a TCP.
+* **Solución:** Se añadió una subsección específica con las especificaciones de hardware, versión de Python y el esquema de aislamiento de procesos en `localhost`.
