@@ -1,0 +1,22 @@
+\section{Conclusión individual: César Macías}
+
+Mi responsabilidad en este proyecto abarcó el desarrollo del cliente gRPC
+(\texttt{src/grpc/grpc\_client.py}), la ejecución y automatización de la batería
+de experimentos distribuidos (\texttt{src/grpc/grpc\_experiment.py}) y la
+implementación de las pruebas unitarias correspondientes en
+\texttt{tests/test\_grpc\_client.py}.
+
+La sincronización de los relojes lógicos de Lamport demostró ser fundamental para
+mantener la consistencia temporal en un entorno asíncrono y distribuido. Implementar
+la actualización del reloj antes de emitir la llamada y tras la llegada del acuse
+permitió constatar que la relación de precedencia causal se cumple con exactitud en
+todas las corridas, tanto en los intercambios secuenciales como bajo condiciones
+concurrentes. Asimismo, la serialización binaria con Protocol Buffers redujo la
+complejidad del cliente respecto a TCP, al delegar la codificación de tipos y
+ofrecer stubs tipados que validan la interfaz antes del tránsito por la red.
+
+Las pruebas unitarias implementadas verificaron no solo el caso nominal, sino
+también la robustez ante destinos caídos y validaciones de argumentos. Con estas
+adiciones, la suite de pruebas del proyecto alcanzó 56 pruebas unitarias exitosas,
+garantizando la fiabilidad de las mediciones y la base de datos experimental
+utilizada para la comparación estadística entre ambos paradigmas.
