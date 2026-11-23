@@ -10,6 +10,14 @@ También incorpora experimentos para medir latencia, rendimiento y concurrencia.
 
 La estructura contempla una segunda implementación utilizando gRPC y Protocol Buffers, destinada a realizar posteriormente una comparación entre ambos mecanismos.
 
+## Integrantes y responsabilidades
+
+El proyecto se desarrolló de manera colaborativa, distribuyendo las actividades de implementación, experimentación y documentación entre los integrantes.
+
+- **Washington Apunte:** desarrollo del contrato Protocol Buffers y del servidor gRPC.
+- **César Macías:** desarrollo del cliente gRPC y automatización de los experimentos correspondientes.
+- **Jordan Loor:** desarrollo del análisis estadístico comparativo entre TCP y gRPC, procesamiento de resultados, generación de gráficos y pruebas automatizadas del módulo de comparación.
+
 ## Tecnologías utilizadas
 
 - Python 3.12.
@@ -280,9 +288,14 @@ Estos valores corresponden al entorno donde se realizaron las pruebas. No repres
 
 ## Estado del proyecto
 
-La implementación TCP, el registro de eventos, los relojes lógicos y el análisis estadístico se encuentran desarrollados y cuentan con pruebas automatizadas.
 
-La implementación gRPC también está desarrollada. El contrato `proto/servicio.proto` define los mensajes y el servicio; el servidor y el cliente gRPC permiten el intercambio de mensajes entre los tres nodos, y ya se ejecutaron sus experimentos. El servidor y el cliente tienen sus propias pruebas en `tests/test_grpc_server.py` y `tests/test_grpc_client.py`. Quedan pendientes el análisis comparativo de TCP frente a gRPC y el informe final.
+El proyecto cuenta con dos implementaciones de comunicación distribuida: sockets TCP y gRPC con Protocol Buffers. Ambas permiten intercambiar mensajes entre tres nodos, utilizar relojes lógicos de Lamport y registrar los eventos de comunicación.
+
+También se realizaron experimentos para medir latencia, throughput y concurrencia. Los resultados se almacenan en archivos CSV y se procesan mediante módulos de análisis estadístico.
+
+El análisis comparativo permite observar el comportamiento de ambos mecanismos utilizando mensajes cortos de 100 bytes y mensajes largos de 10.240 bytes, con 500 muestras por categoría. Se calcularon diferentes métricas estadísticas y se generaron gráficos para facilitar la comparación.
+
+El proyecto cuenta con pruebas automatizadas para verificar sus componentes. En la última ejecución de la suite completa se obtuvieron 63 pruebas superadas.
 
 ## Video demostrativo
 

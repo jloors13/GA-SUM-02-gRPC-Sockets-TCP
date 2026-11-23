@@ -1,0 +1,3 @@
+mechanism,requests,mean_ms,median_ms,minimum_ms,maximum_ms,std_ms,successful_responses
+TCP,3,6.335300,6.211800,6.115400,6.678700,0.301274,3
+gRPC,3,13.068033,13.194300,12.071400,13.938400,0.939883,3

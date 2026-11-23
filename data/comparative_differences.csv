@@ -1,0 +1,3 @@
+message_size,tcp_mean_ms,grpc_mean_ms,tcp_minus_grpc_ms,difference_ci95_lower_ms,difference_ci95_upper_ms,grpc_latency_reduction_percent,tcp_throughput_msg_s,grpc_throughput_msg_s,grpc_throughput_change_percent
+corto,7.220525,3.634639,3.585886,3.226532,3.945241,49.662404,144.301253,275.372357,90.831576
+largo,4.850986,3.271925,1.579061,1.244700,1.913422,32.551338,204.265171,306.316840,49.960387

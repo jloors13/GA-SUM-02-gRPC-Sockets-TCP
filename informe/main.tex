@@ -1,0 +1,64 @@
+\documentclass[12pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish]{babel}
+\usepackage{lmodern}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{amsmath,amssymb}
+\usepackage{array,booktabs,longtable}
+\usepackage{float}
+\usepackage{tikz}
+\usetikzlibrary{babel,positioning}
+\usepackage{microtype}
+\usepackage{csquotes}
+\usepackage{hyperref}
+\usepackage[backend=biber,style=ieee]{biblatex}
+
+\geometry{margin=2.5cm}
+\graphicspath{{./}{../}}
+\addbibresource{informe/referencias.bib}
+
+\title{Comunicación distribuida mediante sockets TCP y gRPC}
+\author{Jordan Loor \and Washington Apunte \and César Macías}
+\date{Noviembre de 2026}
+
+\begin{document}
+\sloppy
+\pagenumbering{roman}
+\maketitle
+\begin{center}
+\textbf{Código de actividad:} GA-SUM-02\\
+\textbf{Repositorio:} \texttt{github.com/jloors13/GA-SUM-02-gRPC-Sockets-TCP}
+\end{center}
+\tableofcontents
+\clearpage
+\pagenumbering{arabic}
+
+\input{informe/seccion_tcp_jordan.tex}
+\input{informe/seccion_proto.tex}
+\input{informe/seccion_servidor.tex}
+\input{informe/seccion_cliente.tex}
+\input{informe/seccion_comparativa_jordan.tex}
+\input{informe/seccion_conclusion_jordan.tex}
+\input{informe/seccion_conclusion_washington.tex}
+\input{informe/seccion_declaracion_ia.tex}
+
+\section{Aportes y trazabilidad}
+\begin{table}[htbp]
+\centering
+\caption{Aportes identificados en el historial del repositorio}
+\begin{tabular}{p{2.6cm}p{7.2cm}l}
+\toprule
+Integrante & Aporte & Commit \\
+\midrule
+Jordan Loor & Implementación y experimentación TCP & \href{https://github.com/jloors13/GA-SUM-02-gRPC-Sockets-TCP/commit/6ac87e5}{6ac87e5} \\
+Washington Apunte & Contrato gRPC y pruebas del servidor & \href{https://github.com/jloors13/GA-SUM-02-gRPC-Sockets-TCP/commit/c2e9edc}{c2e9edc} \\
+César Macías & Cliente gRPC y script experimental & \href{https://github.com/jloors13/GA-SUM-02-gRPC-Sockets-TCP/commit/9b30445}{9b30445} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\printbibliography[heading=bibintoc,title={Referencias}]
+\end{document}

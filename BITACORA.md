@@ -1,3 +1,31 @@
+## Sesión 9 — Implementación inicial de los componentes TCP y módulos comunes
+
+- **Fecha:** 19 de noviembre de 2026
+- **Horario:** Tarde y noche
+- **Integrante:** Jordan Loor
+
+### Lo realizado
+
+- Se creó la estructura inicial del repositorio para organizar los componentes TCP y gRPC.
+- Se configuraron las dependencias del proyecto.
+- Se implementó el reloj lógico de Lamport en `src/common/lamport.py`.
+- Se desarrolló `src/common/event_logger.py` para registrar los eventos de comunicación en archivos CSV.
+- Se implementaron el cliente, servidor y nodo TCP, junto con el módulo de experimentación.
+
+## Sesión 10 — Consolidación de experimentos TCP y documentación de integración
+
+- **Fecha:** 20 de noviembre de 2026
+- **Horario:** Tarde
+- **Integrante:** Jordan Loor
+
+### Lo realizado
+
+- Se consolidaron los experimentos TCP y se desarrolló `analysis/tcp_statistics.py` para calcular estadísticas y generar gráficos.
+- Se incorporaron los resultados experimentales y las pruebas de los módulos comunes.
+- Se desarrolló `analysis/verify_lamport.py` junto con sus pruebas automatizadas.
+- Se implementó `analysis/validate_experiment_data.py` para comprobar la integridad de los registros experimentales.
+- Se agregó la documentación de integración TCP-gRPC en `docs/integracion_tcp_grpc.md`.
+
 ## Sesión 1 — Configuración inicial del repositorio y entorno local
 - **Fecha:** 19 de noviembre de 2026  
 - **Hora:** 23:00 – 23:45  
@@ -146,3 +174,23 @@
 * **Solución:** Se removieron ambos marcadores dejando la redacción limpia y uniforme.
 * **Problema:** El entorno de corrida de los experimentos no estaba formalmente caracterizado en el informe para garantizar la validez metodológica frente a TCP.
 * **Solución:** Se añadió una subsección específica con las especificaciones de hardware, versión de Python y el esquema de aislamiento de procesos en `localhost`.
+## Sesión 11 — Análisis comparativo TCP y gRPC e informe individual
+
+- **Fecha:** 22 de noviembre de 2026
+- **Horario:** Tarde
+- **Integrante:** Jordan Loor
+
+### Lo realizado
+
+- Se desarrolló `analysis/compare_tcp_grpc.py` para comparar los resultados experimentales de TCP y gRPC.
+- Se calcularon estadísticas de latencia, throughput e intervalos de confianza.
+- Se generaron tres gráficos comparativos.
+- Se implementaron pruebas unitarias para el análisis comparativo.
+- Se elaboró la sección comparativa, la conclusión individual y la declaración de uso de IA.
+- Se organizaron los resultados en archivos CSV dentro de `data/`.
+
+### Resultados
+
+- gRPC registró una reducción de latencia media del 49,66 % en mensajes cortos y del 32,55 % en mensajes largos.
+- El throughput promedio de gRPC fue superior en ambos tamaños de mensaje.
+- La suite completa alcanzó 63 pruebas superadas, según la ejecución registrada.
