@@ -1,0 +1,38 @@
+
+\section{Conclusión individual: Jordan}
+
+Durante mi participación en el proyecto me encargué de trabajar en la
+verificación de los datos experimentales y en el análisis comparativo
+entre TCP y gRPC. Esta parte me permitió comprender mejor cómo se
+pueden evaluar dos mecanismos de comunicación a partir de mediciones
+reales y no solamente de sus características teóricas.
+
+Al revisar los resultados, observé que gRPC obtuvo una latencia media
+menor y un throughput promedio mayor en las pruebas realizadas con
+mensajes cortos y largos. Sin embargo, en la prueba de concurrencia
+TCP registró un menor tiempo medio de respuesta. La reducción de la latencia
+media de gRPC fue del 49,66\,\% en mensajes
+cortos y del 32,55\,\% en mensajes largos frente a TCP. En la prueba de tres
+solicitudes concurrentes, las medias fueron 6,335300~ms para TCP y
+13,068033~ms para gRPC. Esto me permitió
+entender que el rendimiento de un mecanismo no se puede valorar
+utilizando una sola métrica, ya que su comportamiento puede variar
+según las condiciones de ejecución.
+
+También trabajé en la validación de los archivos CSV y en las pruebas
+automatizadas para detectar datos incompletos, valores incorrectos
+y resultados estadísticos inconsistentes. Comprobar que las pruebas
+se ejecutaran correctamente fue importante para tener mayor confianza
+en la información utilizada durante el análisis.
+
+Una de las principales limitaciones que identifiqué fue que los tres
+nodos se ejecutaron en el mismo equipo, utilizando la interfaz local.
+Además, la prueba de concurrencia se limitó a tres solicitudes, por
+lo que todavía sería necesario realizar experimentos adicionales
+en diferentes equipos y con una mayor cantidad de comunicaciones.
+
+En general, este trabajo me ayudó a relacionar los conceptos de
+comunicación distribuida con su aplicación práctica. También aprendí
+la importancia de validar los datos antes de interpretarlos y de
+presentar conclusiones que realmente correspondan a los resultados
+obtenidos.

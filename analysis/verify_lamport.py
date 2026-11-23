@@ -177,6 +177,13 @@ def main():
         total = verify_exchanges("data/tcp_exchanges.csv")
 
         print(f"Intercambios con orden causal válido: {total}")
+
+        for node in NODES:
+            path = f"data/grpc_events_{node}.csv"
+            verify_events(path, node)
+
+        total = verify_exchanges("data/grpc_exchanges.csv")
+        print(f"Intercambios gRPC con orden causal válido: {total}")
         print("Resultado: validación completada")
 
     except (OSError, ValueError) as error:

@@ -2,10 +2,12 @@
 import csv
 import tempfile
 import unittest
+from unittest.mock import call, patch
 
 from pathlib import Path
 
 from analysis.verify_lamport import (
+    main,
     verify_events,
     verify_exchanges,
 )
@@ -144,6 +146,64 @@ class TestVerifyLamport(unittest.TestCase):
 
         with self.assertRaises(ValueError):
             verify_exchanges(path)
+
+    def test_grpc_events_valid_for_each_node(self):
+        for node in ("nodo-A", "nodo-B", "nodo-C"):
+            with self.subTest(node=node):
+                path = self.create_events_file([
+                    [node, "send", 1, "2026-11-20T10:00:00"],
+                    [node, "receive", 4, "2026-11-20T10:00:01"],
+                ])
+                self.assertEqual(verify_events(path, node), 2)
+
+    def test_grpc_events_reject_bad_timestamp(self):
+        path = self.create_events_file([
+            ["nodo-A", "send", "bad", "2026-11-20T10:00:00"],
+        ])
+        with self.assertRaisesRegex(ValueError, "timestamp inválido"):
+            verify_events(path, "nodo-A")
+
+    def test_grpc_events_reject_wrong_node(self):
+        path = self.create_events_file([
+            ["nodo-B", "send", 1, "2026-11-20T10:00:00"],
+        ])
+        with self.assertRaisesRegex(ValueError, "nodo incorrecto"):
+            verify_events(path, "nodo-A")
+
+    def test_grpc_exchanges_reject_invalid_causal_order(self):
+        path = self.create_exchanges_file([
+            [1, "nodo-A", "nodo-B", 1, 3, 2, 4],
+        ])
+        with self.assertRaisesRegex(ValueError, "orden causal incorrecto"):
+            verify_exchanges(path)
+
+    def test_grpc_files_report_missing_and_malformed_data(self):
+        missing = self.directory / "grpc_events_nodo-C.csv"
+        with self.assertRaisesRegex(FileNotFoundError, "No existe el archivo"):
+            verify_events(missing, "nodo-C")
+
+        malformed = self.directory / "grpc_exchanges.csv"
+        malformed.write_text("exchange,sender\n1,nodo-A\n", encoding="utf-8")
+        with self.assertRaisesRegex(ValueError, "Faltan columnas"):
+            verify_exchanges(malformed)
+
+    def test_main_checks_tcp_and_grpc_files(self):
+        with patch("analysis.verify_lamport.verify_events") as events, patch(
+            "analysis.verify_lamport.verify_exchanges", return_value=1
+        ) as exchanges:
+            main()
+
+        self.assertEqual(events.call_args_list, [
+            call(f"data/tcp_events_{node}.csv", node)
+            for node in ("nodo-A", "nodo-B", "nodo-C")
+        ] + [
+            call(f"data/grpc_events_{node}.csv", node)
+            for node in ("nodo-A", "nodo-B", "nodo-C")
+        ])
+        self.assertEqual(exchanges.call_args_list, [
+            call("data/tcp_exchanges.csv"),
+            call("data/grpc_exchanges.csv"),
+        ])
 
 
 if __name__ == "__main__":
