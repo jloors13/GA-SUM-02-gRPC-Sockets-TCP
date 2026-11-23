@@ -301,7 +301,7 @@ El proyecto cuenta con pruebas automatizadas para verificar sus componentes. En 
 
 El video demostrativo de la práctica (duración entre 3 y 5 minutos) explica el funcionamiento de los nodos, el intercambio de mensajes con relojes de Lamport y la ejecución de los experimentos:
 
-- **Enlace del video:** [Ver video en YouTube / Google Drive](https://youtu.be/) *(reemplazar con el enlace final del grupo)*
+- **Enlace del video:** https://drive.google.com/file/d/1cR9xQnJKihFH4JRcwE-ykYu7KovuTDxw/view?usp=sharing
 
 ## Compilación del informe académico
 
